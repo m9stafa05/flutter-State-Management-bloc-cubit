@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_state_management/controllers/cubit/counter_cubit.dart';
+import 'package:flutter_state_management/controllers/bloc/counter_bloc.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,7 +32,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CounterCubit(),
+      create: (context) => CounterBloc(),
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(
@@ -47,7 +47,7 @@ class MyHomePage extends StatelessWidget {
               const Text(
                 'You have pushed the button this many times:',
               ),
-              BlocBuilder<CounterCubit, int>(
+              BlocBuilder<CounterBloc, CounterState>(
                 builder: (context, state) {
                   return Text(
                     '$state',
@@ -58,14 +58,16 @@ class MyHomePage extends StatelessWidget {
             ],
           ),
         ),
-        floatingActionButton: BlocBuilder<CounterCubit, int>(
+        floatingActionButton: BlocBuilder<CounterBloc, CounterState>(
           builder: (context, state) {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 FloatingActionButton(
                   onPressed: () {
-                    context.read<CounterCubit>().increment();
+                    context.read<CounterBloc>().add(
+                      CounterIncrement(),
+                    );
                   },
                   tooltip: 'Increment',
                   child: const Icon(Icons.add),
@@ -73,7 +75,9 @@ class MyHomePage extends StatelessWidget {
                 const SizedBox(height: 10),
                 FloatingActionButton(
                   onPressed: () {
-                    context.read<CounterCubit>().decrement();
+                    context.read<CounterBloc>().add(
+                      CounterDecrement(),
+                    );
                   },
                   tooltip: 'Decrement',
                   child: const Icon(Icons.minimize_sharp),
