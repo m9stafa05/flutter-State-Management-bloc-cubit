@@ -50,7 +50,7 @@ class MyHomePage extends StatelessWidget {
               BlocBuilder<CounterBloc, CounterState>(
                 builder: (context, state) {
                   return Text(
-                    '$state',
+                    '${state.count}',
                     style: Theme.of(context).textTheme.headlineMedium,
                   );
                 },
