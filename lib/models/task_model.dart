@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class TaskModel extends Equatable {
   const TaskModel({
-  required  this.title,
+    required this.title,
     required this.isCompleted,
     required this.id,
   });
@@ -16,6 +16,18 @@ class TaskModel extends Equatable {
       title: title ?? this.title,
       isCompleted: isCompleted ?? this.isCompleted,
     );
+  }
+
+  factory TaskModel.fromJson(Map<String, dynamic> json) {
+    return TaskModel(
+      id: json['id'] as String,
+      title: json['title'] as String?,
+      isCompleted: json['isCompleted'] as bool,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'id': id, 'title': title, 'isCompleted': isCompleted};
   }
 
   @override
