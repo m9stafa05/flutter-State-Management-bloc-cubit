@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_state_management/controller/cubit/task_cubit.dart';
+import 'package:flutter_state_management/controller/bloc/task_bloc.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
@@ -39,10 +40,10 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(title)),
       body: BlocProvider(
-        create: (context) => TaskCubit(),
-        child: BlocBuilder<TaskCubit, TaskState>(
+        create: (context) => TaskBloc(),
+        child: BlocBuilder<TaskBloc, TaskState>(
           builder: (context, state) {
-            final cubitController = context.read<TaskCubit>();
+            final cubitController = context.read<TaskBloc>();
             return Center(
               child: Column(
                 children: [
@@ -66,7 +67,9 @@ class MyHomePage extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       if (controller.text.isEmpty) return;
-                      cubitController.addTask(title: controller.text);
+                      cubitController.add(
+                        AddTaskEvent(title: controller.text),
+                      );
                       controller.clear();
                     },
                     child: Container(
@@ -74,7 +77,6 @@ class MyHomePage extends StatelessWidget {
                       child: Text('Add'),
                     ),
                   ),
-
                   SizedBox(height: 20),
                   Expanded(
                     child: ListView.builder(
@@ -87,15 +89,19 @@ class MyHomePage extends StatelessWidget {
                           leading: Checkbox(
                             value: state.tasksList[index].isCompleted,
                             onChanged: (v) {
-                              cubitController.toggleTask(
-                                state.tasksList[index].id,
+                              cubitController.add(
+                                ToggleTaskEvent(
+                                  id: state.tasksList[index].id,
+                                ),
                               );
                             },
                           ),
                           trailing: IconButton(
                             onPressed: () {
-                              cubitController.removeTask(
-                                state.tasksList[index].id,
+                              cubitController.add(
+                                RemoveTaskEvent(
+                                  id: state.tasksList[index].id,
+                                ),
                               );
                             },
                             icon: Icon(Icons.delete),
