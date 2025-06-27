@@ -13,7 +13,6 @@ class ProductCubit extends Cubit<ProductState> {
 
   getProductData() async {
     try {
-      await Future.delayed(Duration(seconds: 5));
       final List<ProductModel> product = await productService
           .getProductService();
       emit(ProductSuccess(productList: product));
