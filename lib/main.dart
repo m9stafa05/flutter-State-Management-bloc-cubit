@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_state_management/controller/cubit/product_cubit.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,8 +29,37 @@ class MyHomePage extends StatelessWidget {
   final String title;
 
   @override
-  @override
   Widget build(BuildContext context) {
-    return Container();
+    return BlocProvider(
+      create: (context) => ProductCubit()..getProductData(),
+      child: Scaffold(
+        appBar: AppBar(title: Text('Products')),
+        body: BlocBuilder<ProductCubit, ProductState>(
+          builder: (context, state) {
+            switch (state) {
+              case ProductLoading():
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              case ProductSuccess():
+                // Replace with your actual success widget
+                return ListView.builder(
+                  itemCount: state.productList.length,
+                  itemBuilder: (context, index) {
+                    final product = state.productList[index];
+                    return ListTile(
+                      title: Text(product.title),
+                      subtitle: Text(product.category),
+                    );
+                  },
+                );
+              case ProductFailed():
+                // Replace with your actual error widget
+                return Center(child: Text('Failed to load products'));
+            }
+          },
+        ),
+      ),
+    );
   }
 }
