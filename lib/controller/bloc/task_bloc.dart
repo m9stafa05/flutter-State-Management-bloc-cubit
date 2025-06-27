@@ -1,12 +1,12 @@
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_state_management/models/task_model.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:uuid/uuid.dart';
 
 part 'task_event.dart';
 part 'task_state.dart';
 
-class TaskBloc extends Bloc<TaskEvent, TaskState> {
+class TaskBloc extends HydratedBloc<TaskEvent, TaskState> {
   TaskBloc() : super(InitialTask()) {
     on<AddTaskEvent>((event, emit) {
       final model = TaskModel(
@@ -34,5 +34,24 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       }).toList();
       emit(UpdateTask(newList));
     });
+  }
+
+  @override
+  TaskState? fromJson(Map<String, dynamic> json) {
+    final tasksJson = json['todoList'] as List<dynamic>?;
+    if (tasksJson == null) return InitialTask();
+    final tasks = tasksJson
+        .map((e) => TaskModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+    return UpdateTask(tasks);
+  }
+
+  @override
+  Map<String, dynamic>? toJson(TaskState state) {
+    return {
+      'todoList': state.tasksList
+          .map((todo) => todo.toJson())
+          .toList(),
+    };
   }
 }
