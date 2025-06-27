@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_state_management/controllers/bloc/counter_bloc.dart';
+import 'package:flutter_state_management/controllers/cubit/counter_cubit.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  HydratedBloc.storage = await HydratedStorage.build(
+    storageDirectory: HydratedStorageDirectory(
+      (await getTemporaryDirectory()).path,
+    ),
+  );
   runApp(const MyApp());
 }
 
@@ -32,7 +40,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CounterBloc(),
+      create: (context) => CounterCubit(),
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(
@@ -47,7 +55,7 @@ class MyHomePage extends StatelessWidget {
               const Text(
                 'You have pushed the button this many times:',
               ),
-              BlocBuilder<CounterBloc, CounterState>(
+              BlocBuilder<CounterCubit, CounterState>(
                 builder: (context, state) {
                   return Text(
                     '${state.count}',
@@ -58,16 +66,14 @@ class MyHomePage extends StatelessWidget {
             ],
           ),
         ),
-        floatingActionButton: BlocBuilder<CounterBloc, CounterState>(
+        floatingActionButton: BlocBuilder<CounterCubit, CounterState>(
           builder: (context, state) {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 FloatingActionButton(
                   onPressed: () {
-                    context.read<CounterBloc>().add(
-                      CounterIncrement(),
-                    );
+                    context.read<CounterCubit>().increment();
                   },
                   tooltip: 'Increment',
                   child: const Icon(Icons.add),
@@ -75,9 +81,7 @@ class MyHomePage extends StatelessWidget {
                 const SizedBox(height: 10),
                 FloatingActionButton(
                   onPressed: () {
-                    context.read<CounterBloc>().add(
-                      CounterDecrement(),
-                    );
+                    context.read<CounterCubit>().decrement();
                   },
                   tooltip: 'Decrement',
                   child: const Icon(Icons.minimize_sharp),
