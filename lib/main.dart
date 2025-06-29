@@ -39,7 +39,7 @@ class MyHomePage extends StatelessWidget {
           create: (context) => LoginCubit(),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: BlocListener<LoginCubit, LoginState>(
+            child: BlocConsumer<LoginCubit, LoginState>(
               listener: (context, state) {
                 if (state is LoginFailure) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -57,45 +57,43 @@ class MyHomePage extends StatelessWidget {
                   );
                 }
               },
-              child: BlocBuilder<LoginCubit, LoginState>(
-                builder: (context, state) {
-                  return Column(
-                    children: [
-                      TextField(
-                        controller: usernameController,
-                        decoration: InputDecoration(
-                          hintText: 'Enter your User Name',
-                          border: UnderlineInputBorder(),
-                        ),
+              builder: (context, state) {
+                return Column(
+                  children: [
+                    TextField(
+                      controller: usernameController,
+                      decoration: InputDecoration(
+                        hintText: 'Enter your User Name',
+                        border: UnderlineInputBorder(),
                       ),
-                      SizedBox(height: 20),
-                      TextField(
-                        obscureText: true,
-                        controller: passwordController,
-                        decoration: InputDecoration(
-                          hintText: 'Enter your Password',
-                          border: UnderlineInputBorder(),
-                        ),
+                    ),
+                    SizedBox(height: 20),
+                    TextField(
+                      obscureText: true,
+                      controller: passwordController,
+                      decoration: InputDecoration(
+                        hintText: 'Enter your Password',
+                        border: UnderlineInputBorder(),
                       ),
-                      SizedBox(height: 20),
-                      state is LoginLoading
-                          ? CircularProgressIndicator()
-                          : ElevatedButton(
-                              onPressed: () {
-                                context.read<LoginCubit>().login(
-                                  userName: usernameController.text,
-                                  password: passwordController.text,
-                                );
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text('Login'),
-                              ),
+                    ),
+                    SizedBox(height: 20),
+                    state is LoginLoading
+                        ? CircularProgressIndicator()
+                        : ElevatedButton(
+                            onPressed: () {
+                              context.read<LoginCubit>().login(
+                                userName: usernameController.text,
+                                password: passwordController.text,
+                              );
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Login'),
                             ),
-                    ],
-                  );
-                },
-              ),
+                          ),
+                  ],
+                );
+              },
             ),
           ),
         ),
