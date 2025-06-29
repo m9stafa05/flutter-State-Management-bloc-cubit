@@ -48,22 +48,33 @@ class MyHomePage extends StatelessWidget {
           ).colorScheme.inversePrimary,
           title: Text(title),
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                'You have pushed the button this many times:',
-              ),
-              BlocBuilder<CounterCubit, CounterState>(
-                builder: (context, state) {
-                  return Text(
-                    '${state.count}',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  );
-                },
-              ),
-            ],
+        body: BlocListener<CounterCubit, CounterState>(
+          listener: (context, state) {
+            if (state.count == 5) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('The Count IS 5')),
+              );
+            }
+          },
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const Text(
+                  'You have pushed the button this many times:',
+                ),
+                BlocBuilder<CounterCubit, CounterState>(
+                  builder: (context, state) {
+                    return Text(
+                      '${state.count}',
+                      style: Theme.of(
+                        context,
+                      ).textTheme.headlineMedium,
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
         floatingActionButton: BlocBuilder<CounterCubit, CounterState>(
