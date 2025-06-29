@@ -48,59 +48,56 @@ class MyHomePage extends StatelessWidget {
           ).colorScheme.inversePrimary,
           title: Text(title),
         ),
-        body: BlocListener<CounterCubit, CounterState>(
-          listener: (context, state) {
-            if (state.count == 5) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('The Count IS 5')),
-              );
-            }
-          },
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const Text(
-                  'You have pushed the button this many times:',
-                ),
-                BlocBuilder<CounterCubit, CounterState>(
-                  builder: (context, state) {
-                    return Text(
-                      '${state.count}',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.headlineMedium,
-                    );
-                  },
-                ),
-              ],
-            ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text(
+                'You have pushed the button this many times:',
+              ),
+              BlocBuilder<CounterCubit, CounterState>(
+                builder: (context, state) {
+                  return Text(
+                    '${state.count}',
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  );
+                },
+              ),
+            ],
           ),
         ),
-        floatingActionButton: BlocBuilder<CounterCubit, CounterState>(
-          builder: (context, state) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FloatingActionButton(
-                  onPressed: () {
-                    context.read<CounterCubit>().increment();
-                  },
-                  tooltip: 'Increment',
-                  child: const Icon(Icons.add),
-                ),
-                const SizedBox(height: 10),
-                FloatingActionButton(
-                  onPressed: () {
-                    context.read<CounterCubit>().decrement();
-                  },
-                  tooltip: 'Decrement',
-                  child: const Icon(Icons.minimize_sharp),
-                ),
-              ],
-            );
-          },
-        ),
+        floatingActionButton:
+            BlocConsumer<CounterCubit, CounterState>(
+              listener: (context, state) {
+                if (state.count == 5) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('The Count Is 5')),
+                  );
+                }
+              },
+              builder: (context, state) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FloatingActionButton(
+                      onPressed: () {
+                        context.read<CounterCubit>().increment();
+                      },
+                      tooltip: 'Increment',
+                      child: const Icon(Icons.add),
+                    ),
+                    const SizedBox(height: 10),
+                    FloatingActionButton(
+                      onPressed: () {
+                        context.read<CounterCubit>().decrement();
+                      },
+                      tooltip: 'Decrement',
+                      child: const Icon(Icons.minimize_sharp),
+                    ),
+                  ],
+                );
+              },
+            ),
       ),
     );
   }
