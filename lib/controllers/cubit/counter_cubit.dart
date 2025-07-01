@@ -8,12 +8,12 @@ class CounterCubit extends HydratedCubit<CounterState> {
   CounterCubit() : super(CounterInit());
 
   void increment() {
-    emit(CounterUpdate(state.count + 1));
+    emit(state.copyWith(count: state.count + 1));
   }
 
   void decrement() {
     if (state.count == 0) return;
-    emit(CounterUpdate(state.count - 1));
+    emit(state.copyWith(count: state.count - 1));
   }
 
   @override
